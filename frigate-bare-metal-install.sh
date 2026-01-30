@@ -607,10 +607,20 @@ WantedBy=multi-user.target
 EOF
 
 # 17. VERSION GEN
+log "Finalizing versioning..."
 VERSION_FILE="$INSTALL_BASE/repo/frigate/version.py"
-CLEAN_VERSION="${TAG#v}"
+# [FIX] Usar TARGET_VERSION que vem do menu e remover o 'v' se existir
+CLEAN_VERSION="${TARGET_VERSION#v}"
+
+# Fallback caso a variável esteja vazia por algum motivo
+if [ -z "$CLEAN_VERSION" ]; then
+    CLEAN_VERSION="0.0.0-unknown"
+fi
+
 echo "VERSION = '$CLEAN_VERSION'" > "$VERSION_FILE"
-echo "BUILD_VERSION = '$CLEAN_VERSION-baremetal-s6'" >> "$VERSION_FILE"
+echo "BUILD_VERSION = '${CLEAN_VERSION}-baremetal-s6'" >> "$VERSION_FILE"
+
+log "Version set to: $CLEAN_VERSION"
 
 # 18. ENABLE AND START SERVICES
 systemctl daemon-reload
@@ -621,4 +631,5 @@ systemctl start frigate-s6
 # 19. INSTALL COMPLETE
 echo -e "\n${GREEN}SUCCESS! Frigate S6 Installed.${NC}"
 echo "URL: http://<IP>:$HTTP_PORT"
+
 echo "Log file: $LOG_FILE"
