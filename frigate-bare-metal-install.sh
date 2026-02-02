@@ -456,6 +456,10 @@ process_service "certsync"
 log "Configuring System..."
 mkdir -p "$MEDIA_DIR" "$CONFIG_DIR" "$DATABASE_DIR"
 
+log "Granting permissions to $MEDIA_DIR..."
+chown -R root:root $MEDIA_DIR
+chmod -R 777 $MEDIA_DIR
+
 #if [ ! -d "/config" ]; then ln -s "$CONFIG_DIR" /config; fi
 #if [ ! -d "/media/frigate" ]; then ln -s "$STORAGE_DIR" "$MEDIA_DIR"; fi
 
@@ -554,9 +558,9 @@ mkdir -p /dev/shm/logs/nginx
 mkdir -p /dev/shm/logs/go2rtc
 chmod -R 777 /dev/shm/logs
 
-# 4. Permissions
-chown -R root:root $MEDIA_DIR
-chmod -R 777 $MEDIA_DIR
+# 4. Permissions - commented to avoid reaplying it everytime as the $MEDIA_DIR can get really big
+#chown -R root:root $MEDIA_DIR
+#chmod -R 777 $MEDIA_DIR
 
 # 5. Nginx IO
 [ ! -e /dev/stdin ]  && ln -sf /proc/self/fd/0 /dev/stdin
@@ -633,3 +637,4 @@ echo -e "\n${GREEN}SUCCESS! Frigate S6 Installed.${NC}"
 echo "URL: http://<IP>:$HTTP_PORT"
 
 echo "Log file: $LOG_FILE"
+
