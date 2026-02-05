@@ -573,7 +573,8 @@ chmod +x /opt/frigate/prepare_env.sh
 cat <<EOF > /opt/frigate/cleanup_env.sh
 #!/bin/bash
 echo "[Cleanup] Wiping transient cache..."
-rm -rf /tmp/cache/*
+#rm -rf /tmp/cache/*
+find /tmp/cache -type f -name '*.mp4' ! -name 'preview*' -delete
 echo "[Cleanup] Environment clean."
 exit 0
 EOF
@@ -637,4 +638,5 @@ echo -e "\n${GREEN}SUCCESS! Frigate S6 Installed.${NC}"
 echo "URL: http://<IP>:$HTTP_PORT"
 
 echo "Log file: $LOG_FILE"
+
 
